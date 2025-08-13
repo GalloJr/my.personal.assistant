@@ -3,12 +3,14 @@ const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
+const accountRoutes = require('./routes/accountRoutes');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/accounts', accountRoutes);
 
 sequelize.sync({ alter: true }) // cria/atualiza tabelas conforme models
   .then(() => {
