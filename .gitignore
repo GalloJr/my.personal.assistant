@@ -60,3 +60,6 @@ typings/
 
 # Custom rules
 dist/
+
+# dotenv environment variables file
+.env
