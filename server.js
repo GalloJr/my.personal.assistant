@@ -1,16 +1,16 @@
 require('dotenv').config();
-import express, { json } from 'express';
-import cors from 'cors';
-import { sync } from './config/database';
-import authRoutes from './routes/authRoutes';
+const express = require('express');
+const cors = require('cors');
+const sequelize = require('./config/database');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
 app.use(cors());
-app.use(json());
+app.use(express.json());
 app.use('/api/auth', authRoutes);
 
-sync({ alter: true }) // cria/atualiza tabelas conforme models
+sequelize.sync({ alter: true }) // cria/atualiza tabelas conforme models
   .then(() => {
     console.log('Banco sincronizado');
     app.listen(process.env.PORT, () => {
