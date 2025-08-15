@@ -1,8 +1,23 @@
+const { Op } = require('sequelize');
 const Account = require('../models/Account');
 
 exports.getAccounts = async (req, res) => {
   try {
-    const accounts = await Account.findAll({ where: { userId: req.user.id } });
+    const { status, month, year, title } = req.query;
+    const where = { userId: req.user.id };
+
+    if (status) where.status = status;
+    if (title)  where.title = { [Op.iLike]: `%${title}%` };
+
+    // Uso do filtro por mês e ano
+    if (month && year) {
+      // Prepara datas para buscar entre o primeiro e o último dia do mês
+      const start = `${year}-${month.padStart(2, '0')}-01`;
+      const end = `${year}-${month.padStart(2, '0')}-31`;
+      where.dueDate = { [Op.between]: [start, end] };
+    }
+
+    const accounts = await Account.findAll({ where });
     res.json(accounts);
   } catch (err) {
     res.status(500).json({ error: err.message });
